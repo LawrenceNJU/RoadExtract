@@ -12,6 +12,8 @@ Created on Jan 08 2017
 # calculate the state of start point
 from road_kalman import RoadEKF
 import numpy as np
+import sys
+sys.path.append("../code")
 
 def vector_direction(v):
     """ Returns the direction angle of vectors v1::

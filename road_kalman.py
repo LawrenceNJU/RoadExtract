@@ -10,28 +10,28 @@ from numpy import dot, array, sqrt
 import sympy
 from sympy import symbols, Matrix
 from sympy.abc import r, c, theta, beta
-from filterpy.kalman import ExtendedKalmanFilter as EKF 
+from filterpy.kalman import ExtendedKalmanFilter as EKF RAOD
 
 
 class RoadEKF(EKF):
-	def __init__(self, dt):
+	def __init__(self, dt): 
 		EKF.__init__(self, 4, 2)
 		r, c , theta, beta = symbols('r, c, theta, beta') # beta is the change of theta
 		self.dt = dt
-		self.fxu = Matrix([[r - dt*sin(theta + beta*dt/2)],
-			[c + dt*cos(theta + beta*dt/2)],
+		self.fxu = Matrix([[r - dt*sympy.sin(theta + beta*dt/2)],
+			[c + dt*sympy.cos(theta + beta*dt/2)],
 			[theta + dt*beta],
 			[beta]])
 			
-		self.F_j = self.fxu.jacobian(Matrix([x, y, theta, beta]))
+		self.F_j = self.fxu.jacobian(Matrix([r, c, theta, beta]))
 		self.subs = {r:0, c:0, theta:0, beta:0}
 		self.r, self.c, self.theta, self.beta = r, c, theta, beta
-		
+	
 	def predict(self, u=0):
 		
 		# predict the next state
-		dx = np.array([[self.dt*sin(x[2,0] + x[3,0]*dt/2.0)],
-			[self.dt*cos(x[2,0] + x[3,0]*dt/2.0)],
+		dx = np.array([[self.dt*np.sin(x[2,0] + x[3,0]*dt/2.0)],
+			[self.dt*np.cos(x[2,0] + x[3,0]*dt/2.0)],
 			[x[3,0]*self.dt],
 			[0]])
 		
@@ -44,6 +44,7 @@ class RoadEKF(EKF):
 		F = array(self.F_j.evalf(subs = self.subs)).astype(float)	
 		
 		self.P = np.dot(F, self.P).dot(F.T) + self.Q
+
 		
 	def update(self, z):
 	    
