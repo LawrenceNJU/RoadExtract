@@ -44,12 +44,13 @@ def get_profile(image, r, c, theta, road_width=10):
     profile = skimage.measure.profile_line(image, src, dst, linewidth=3, order=0, mode='constant', cval=0.0)
     return profile
 	
-def match_profile(profile, Set_profile):
+def match_profile(x, ref_profile):
 	# using least square get the shift between the two profile
-	corrcoef = numpy.corrcoef(profile, Set_Profile)
-	measuredData = np.array(yvalues['int1'])
-	calibrationData = np.array(yvalues['int0'])
-
+	profile = get_profile(x, road_width=30)
+	corrcoef = numpy.corrcoef(profile, ref_profile)
+	
+	measured_data = np.array(yvalues['int1'])
+	calibration_data = np.array(yvalues['int0'])
 	A = np.vstack( [measuredData, np.ones(len(measuredData))]).T
 	gain,offset = np.linalg.lstsq(A, calibrationData)[0]
 	return corrcoef, gain, offset
@@ -67,7 +68,7 @@ def main():
 	    subroad = []
 		for x1,y1,x2,y2 in line:
 			vector12 = np.array([x1-x2, y1-y2])
-			subroad.append([x1, y1])
+			subroad.append([x1, y1])                        
 			road_tracker.x = np.array([[x1, y1, vector_direction(vector12), 0]])
 			profile = get_profile(image, x1, y1, vector_direction(vector12))
 			i = 0
