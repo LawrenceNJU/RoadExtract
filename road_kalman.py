@@ -10,7 +10,7 @@ from numpy import dot, array, sqrt
 import sympy
 from sympy import symbols, Matrix
 from sympy.abc import r, c, theta, beta
-from filterpy.kalman import ExtendedKalmanFilter as EKF RAOD
+from filterpy.kalman import ExtendedKalmanFilter as EKF
 
 
 class RoadEKF(EKF):
